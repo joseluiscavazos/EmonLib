@@ -29,6 +29,7 @@ class EnergyMonitor
 
     void calcVI(int crossings, int timeout);
     double calcIrms(int NUMBER_OF_SAMPLES);
+    double calcVrms(int NUMBER_OF_SAMPLES);
     void serialprint();
 
     long readVcc();
