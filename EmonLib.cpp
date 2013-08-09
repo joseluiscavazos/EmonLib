@@ -195,6 +195,27 @@ int SUPPLYVOLTAGE = readVcc();
   return Irms;
 }
 
+double EnergyMonitor::calcVrms(int NUMBER_OF_SAMPLES)
+{
+  int SUPPLYVOLTAGE = readVcc();
+    for (int n = 0; n < NUMBER_OF_SAMPLES; n++)
+  {
+    lastSampleV = sampleV;
+    sampleV = analogRead(inPinV);
+    lastFilteredV = filteredV;
+    filteredV = 0.996*(lastFilteredV+sampleV-lastSampleV);      // Root-mean-square method current
+    // 1) square voltage values
+    sqV = filteredV * filteredV;
+    // 2) sum
+    sumV += sqV;
+  }
+  double V_RATIO = VCAL *((SUPPLYVOLTAGE/1000.0) / 1023.0);
+  Vrms = V_RATIO * sqrt(sumV / NUMBER_OF_SAMPLES);
+  //Reset accumulators
+  sumV = 0;
+//--
+   return Vrms;
+}
 void EnergyMonitor::serialprint()
 {
     Serial.print(realPower);
